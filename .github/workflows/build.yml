@@ -23,6 +23,8 @@ jobs:
 
       - name: Run tests
         run: pytest
+        env:
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Build Docker image
         run: docker build -t calculator:latest .
