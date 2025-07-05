@@ -16,7 +16,7 @@ def test_substract():
 def test_index_get(client):
     response = client.get('/')
     assert response.status_code == 200
-    assert b"result" in response.data or b"Result" in response.data
+    assert b"Calculator Flask" in response.data
 
 def test_index_post_add(client):
     response = client.post('/', data={'a': '2', 'b': '3', 'operation': '+'})
