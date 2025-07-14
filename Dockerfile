@@ -2,6 +2,12 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY calculator.py .
+COPY requirements.txt .
 
-CMD [ "python", "calculator.py" ]
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["python", "calculator.py"]
