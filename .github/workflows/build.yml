@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Checkout code
@@ -50,4 +52,18 @@ jobs:
           aws s3 cp calculator.zip s3://elasticbeanstalk-eu-central-1-072929378948/calculator-${{ github.sha }}.zip
           aws elasticbeanstalk create-application-version --application-name flask-calculator --version-label ${{ github.sha }} --source-bundle S3Bucket=elasticbeanstalk-eu-central-1-072929378948,S3Key=calculator-${{ github.sha }}.zip
           aws elasticbeanstalk update-environment --environment-name Flask-calculator-env-1 --version-label ${{ github.sha }}
+
+      - name: Fake scan
+        id: scan
+        run: |
+          echo "Scanning completed successfully!" >> $GITHUB_STEP_SUMMARY
+
+      - name: Add PR comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.scan.outputs.summary }}
+          comment-id: security-report-pr-comment 
+          edit-mode: replace
+
       
