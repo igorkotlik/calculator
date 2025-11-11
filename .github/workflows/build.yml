@@ -59,7 +59,11 @@ jobs:
       - name: Fake scan
         id: scan
         run: |
-          echo "Scanning completed successfully!" >> $GITHUB_STEP_SUMMARY
+          REPORT_CONTENT="Scanning completed successfully!"
+        
+          echo "$REPORT_CONTENT" >> $GITHUB_STEP_SUMMARY
+          
+          echo "report_body=$REPORT_CONTENT" >> $GITHUB_OUTPUT
 
       - name: Add PR comment
         if: github.event_name == 'pull_request'
