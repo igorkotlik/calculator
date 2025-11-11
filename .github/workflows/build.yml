@@ -60,7 +60,8 @@ jobs:
         id: scan
         run: |
           echo "Scanning completed successfully!" >> $GITHUB_STEP_SUMMARY
-
+          #test commit
+          
       - name: Add PR comment
         if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
