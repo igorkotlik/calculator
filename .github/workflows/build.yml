@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+      - feature/*
 
 jobs:
   build:
@@ -59,15 +60,27 @@ jobs:
       - name: Fake scan
         id: scan
         run: |
-          echo "Scanning completed successfully!" >> $GITHUB_STEP_SUMMARY
-          #test commit
+          REPORT_CONTENT=$(cat <<EOF
+          Scanning completed successfully!"
+          | Severity | Count |
+          |----------|-------|
+          | High     | 0     |
+          | Medium   | 1     |
+          | Low      | 3     |
+          EOF
+          )
+          echo "$REPORT_CONTENT" >> $GITHUB_STEP_SUMMARY
           
+          echo "report_body<<EOF" >> $GITHUB_OUTPUT
+          echo "$REPORT_CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Add PR comment
         if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body: ${{ steps.scan.outputs.summary }}
+          body: ${{ steps.scan.outputs.report_body }}
           comment-id: security-report-pr-comment 
           edit-mode: replace
 
