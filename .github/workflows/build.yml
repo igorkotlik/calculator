@@ -60,11 +60,20 @@ jobs:
       - name: Fake scan
         id: scan
         run: |
-          REPORT_CONTENT="Scanning completed successfully!"
-        
+          REPORT_CONTENT=$(cat <<EOF
+          Scanning completed successfully!"
+          | Severity | Count |
+          |----------|-------|
+          | High     | 0     |
+          | Medium   | 1     |
+          | Low      | 3     |
+          EOF
+          )
           echo "$REPORT_CONTENT" >> $GITHUB_STEP_SUMMARY
           
-          echo "report_body=$REPORT_CONTENT" >> $GITHUB_OUTPUT
+          echo "report_body<<EOF" >> $GITHUB_OUTPUT
+          echo "$REPORT_CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Add PR comment
         if: github.event_name == 'pull_request'
